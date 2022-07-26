@@ -196,6 +196,19 @@ docker run -d -p 9292:9292 geminabox:latest
 
 Your server should now be running!
 
+#### Configure
+
+If you want to configure the server a bit just do the following. Here is a example of how I use the ENV variables
+
+```
+docker run -d -p 9292:9292 -e RUBYGEMS_PROXY_MERGE_STRATEGY=combine_local_and_remote_gem_versions -e RUBYGEMS_URLS=https://other.gemserver.com,https://rubygems.org -e BUNDLER_RUBY_GEM_URLS=https://rubygems.internal.com,https://bundler.rubygems.org -e RUBYGEMS_PROXY=true -e ALLOW_REMOTE_FAILURE=true geminabox:latest
+```
+
+
+If you don't want this huge string you can create a `.env` file and just use that. I use `.env.local` in this example just because that file is on the ignore list and won't show up in Docker image once it is built. see `.dockerignore` for all the files that are ignored when building a image
+```
+docker run -d -p 9292:9292 --env-file .env.local geminabox:latest
+```
 
 ## Running the tests
 

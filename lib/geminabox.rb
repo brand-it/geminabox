@@ -51,8 +51,8 @@ module Geminabox
       :lockfile,
       :retry_interval,
       :allow_remote_failure,
-      :ruby_gems_url,
-      :bundler_ruby_gems_url,
+      :ruby_gems_urls,
+      :bundler_ruby_gems_urls,
       :allow_upload,
       :on_gem_received
     )
@@ -95,9 +95,9 @@ module Geminabox
     http_adapter:                   HttpClientAdapter.new,
     lockfile:                       File.join(ENV.fetch('TMPDIR', Dir.tmpdir), 'geminabox.lockfile'),
     retry_interval:                 60,
-    allow_remote_failure:           false,
-    ruby_gems_url:                  'https://rubygems.org/',
-    bundler_ruby_gems_url:          'https://bundler.rubygems.org/',
+    allow_remote_failure:           (ENV.fetch('ALLOW_REMOTE_FAILURE', 'false') == 'true'),
+    ruby_gems_urls:                 (ENV.fetch('RUBYGEMS_URLS', nil)&.split(',') || ['https://rubygems.org/']),
+    bundler_ruby_gems_urls:         (ENV.fetch('BUNDLER_RUBY_GEM_URLS', nil)&.split(',') || ['https://bundler.rubygems.org/']),
     allow_upload:                   true,
     on_gem_received:                nil
   )

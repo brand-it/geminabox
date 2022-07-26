@@ -44,14 +44,18 @@ module Geminabox
       end
 
       def remote_content
-        Geminabox.http_adapter.get_content(remote_url)
-      rescue
-        return nil if Geminabox.allow_remote_failure
-        raise GemStoreError.new(500, "Unable to get content from #{remote_url}")
+        remote_urls.each do |remote_url|
+          return Geminabox.http_adapter.get_content(remote_url)
+        rescue
+          next nil if Geminabox.allow_remote_failure
+          raise GemStoreError.new(500, "Unable to get content from #{remote_url}")
+        end
       end
 
-      def remote_url
-        URI.join(Geminabox.ruby_gems_url, file_name)
+      def remote_urls
+        Geminabox.ruby_gems_urls.map do |url|
+          URI.join(url, file_name)
+        end
       end
 
       def local_content

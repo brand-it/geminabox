@@ -61,12 +61,15 @@ module Geminabox
         file = File.expand_path(File.join(Geminabox.data, *request.path_info))
 
         unless File.exist?(file)
-          ruby_gems_url = Geminabox.ruby_gems_url
-          path = File.join(ruby_gems_url, *request.path_info)
-          content = Geminabox.http_adapter.get_content(path)
-          GemStore.create(IncomingGem.new(StringIO.new(content)))
+          Geminabox.ruby_gems_urls.find do |ruby_gems_url|
+            path = File.join(ruby_gems_url, *request.path_info)
+            content = Geminabox.http_adapter.get_content(path)
+            GemStore.create(IncomingGem.new(StringIO.new(content)))
+          rescue
+            next if Geminabox.allow_remote_failure
+            raise GemStoreError.new(500, "Unable to get content from #{path}")
+          end
         end
-
       end
 
       def splice_file(file_name)
